@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+
+<project name="JCE-Book" default="main" basedir=".">
+
+	<!-- 	
+		Give the user a chance to override without editing this file or
+		typing -D each time it executes.
+	-->
+	<property file="${user.home}/.ant.properties"/>
+
+	<!--
+	Note:  Some eclipse installations will require that you override this, setting
+		   it to org.eclipse.jdt.core.JDTCompilerAdapter.  For example, modern works
+		   fine on my Mac, but if try to build this project on Windows 2000 I have to
+		   override this setting for Eclipse to execute Ant properly. 
+	-->
+	<property name="build.compiler" value="modern"/>
+	
+	<property name="project.name" value="jce-pgp"/>
+	<property name="project.version" value="1.0"/>
+	<property name="project.display.name" value="Java Cryptography Extensions: Practical Guide for Programmers"/>
+	
+	
+	<property name="src.dir" value="${basedir}/src"/>
+	<property name="bin.dir" value="${basedir}/bin"/>
+	<property name="lib.dir" value="${basedir}/lib"/>
+	<property name="javadocs.dir" value="${basedir}/doc"/>
+	<property name="work.dir" value="${basedir}/tmp"/>
+	
+	<path id="classpath">
+    	<fileset dir="${basedir}/3rdPartyLib" includes="**/*.jar"/>
+	</path>
+	
+    <!-- ================================================================== -->
+    <!-- Displays usage information                                         -->
+    <!-- ================================================================== -->
+    <target name="usage" description="Displays usage information">
+	    <echo message="Welcome to ${project.display.name} Release."/>    
+        <echo message="Use -projecthelp to see the available targets"/>
+    </target>	
+	
+    <!-- =================================================================== -->
+    <!-- Initializes the build.                                              -->
+    <!-- =================================================================== -->    	
+	<target name="init"
+			description = "Scrubs the build directories, removing the ${bin.dir}, ${lib.dir}, ${work.dir} and {$javadoc.dir} directories">	
+	
+	
+	    <!-- So that we can use the ${TSTAMP}, ${DSTAMP}, ... time stamps in targets, if need be -->
+        <tstamp/>
+
+        <echo message="---------- ${project.display.name} ----------"/>
+        <echo message="Output: ${lib.dir}/${project.name}.jar"/>
+        <echo message="Version: ${project.version}"/>
+        <echo message=""/>
+        <echo message="Written and developed by Jason R. Weiss"/>
+        <echo message=""/>
+        <echo message="Bouncy Castle version bcprov-jdk14-119 was used to test with"/>
+        <echo message="Cryptix cryptix-jce-provider dated 2/17/03 was used to test with"/>
+
+		<echo message="--- Your Environment Variables ---"/>
+        <echo message="basedir = ${basedir}"/>
+        <echo message="java.home = ${java.home}"/>
+        <echo message="user.home = ${user.home}"/>
+        <echo message="build.compiler = ${build.compiler}"/>                
+        <echo message=""/>
+        <echo message="java.class.path = ${java.class.path}"/>        
+        <echo message=""/>
+	
+	  <delete dir="${bin.dir}"/>
+	  <delete dir="${work.dir}"/>
+	  <delete dir="${lib.dir}"/>
+
+	  <mkdir dir="${bin.dir}"/>
+	  <mkdir dir="${work.dir}"/>
+	  <mkdir dir="${lib.dir}"/>
+	</target>
+	
+	<!-- =================================================================== -->
+    <!-- Compiles the examples.                                              -->
+    <!-- =================================================================== -->    
+	<target name="main" 
+			description = "Builds all of the ${project.display.name} examples"
+			depends = "init">
+		<javac 	destdir="${bin.dir}"
+			srcdir="${src.dir}"
+			includes="com/mkp/**"
+			debug="off"
+			deprecation="on"
+			classpathref="classpath"
+			optimize="on"/>			
+	</target>	 
+	
+    <target name="javadoc"
+    		description = "Builds the JavaDoc documentation for all the code samples">
+        <javadoc destdir="${javadocs.dir}" access="public" use="true" notree="false"
+            nonavbar="false" noindex="false" splitindex="true"
+            author="true" version="true" nodeprecatedlist="false"
+            nodeprecated="false"
+            packagenames="com.mkp.jce.misc,com.mkp.jce.chap1,com.mkp.jce.chap2,com.mkp.jce.chap3,com.mkp.jce.chap4,com.mkp.jce.chap5"
+            sourcepath="src" classpath="bin"
+            overview="${src.dir}/overview.html" 
+            bottom="${project.display.name}-- report errata to http://www.z5o.com/jce/errata.html"
+            windowtitle="JCE Code Samples">
+            <header>JCE Code Samples</header>
+            <doctitle><![CDATA[<table width=90%><tr><td><img src=com/mkp/jce/misc/doc-files/cover.jpg></td><td valign=middle>${project.display.name}</td></tr></table>]]></doctitle>
+		</javadoc>
+    </target>		
+</project>
